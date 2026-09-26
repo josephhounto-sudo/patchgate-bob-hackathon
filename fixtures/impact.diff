@@ -1,0 +1,16 @@
+diff --git a/examples/checkout/app.py b/examples/checkout/app.py
+index 1111111..2222222 100644
+--- a/examples/checkout/app.py
++++ b/examples/checkout/app.py
+@@ -4,8 +4,9 @@ from decimal import Decimal
+ 
+ 
+ def calculate_total(subtotal: Decimal, tax_rate: Decimal) -> Decimal:
+-    return subtotal + subtotal * tax_rate
++    tax = subtotal * tax_rate
++    return (subtotal + tax).quantize(Decimal("0.01"))
+ 
+ 
+ def authorize_payment(amount: Decimal) -> bool:
+-    return amount >= Decimal("0.00")
++    return amount > Decimal("0.00")

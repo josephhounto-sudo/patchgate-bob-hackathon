@@ -1,0 +1,77 @@
+<!doctype html><html lang="en"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PatchGate | sample</title>
+<style>
+:root{font:16px/1.55 system-ui,sans-serif;color:#e8eef6;background:#0b1420}
+*{box-sizing:border-box}body{margin:0}main{max-width:960px;margin:auto;padding:36px 20px 80px}
+.eyebrow{color:#87d7c6;letter-spacing:.17em;text-transform:uppercase;font-size:.75rem;font-weight:700}
+h1{font-size:clamp(2rem,6vw,4rem);margin:8px 0}h2{margin-top:36px}
+.summary{color:#9eafc2}.status{display:inline-block;padding:9px 13px;border-radius:8px;background:#173b40;color:#9ef3d5;font-weight:800}
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}.stats span{background:#142337;border:1px solid #2a4058;border-radius:10px;padding:12px 16px}
+.finding{background:#142337;border:1px solid #2a4058;border-radius:12px;padding:20px;margin:13px 0}
+.meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#a7b9cc;font-size:.84rem}
+.badge{text-transform:uppercase;border-radius:4px;padding:3px 8px;font-weight:800;color:#111}
+.critical{background:#ff8a8a}.high{background:#ffbd84}.medium{background:#ffe18a}.low{background:#9fdfd2}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#d6ecfa;background:#0b1420;padding:12px;border-radius:8px}
+.action{color:#9fe3d3}footer{border-top:1px solid #2a4058;padding-top:18px;color:#a7b9cc}
+.review{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid #2a4058;padding-top:14px}
+button{font:inherit;border:1px solid #53839a;border-radius:7px;padding:7px 11px;background:#20364b;color:#eef6fc;cursor:pointer}
+button:hover,button:focus-visible{background:#31536d}button[aria-pressed="true"]{background:#9fe3d3;color:#09251e;border-color:#9fe3d3}
+.decision-label{margin-left:auto;color:#b9cddd}.toolbar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:20px}
+.note{color:#9eafc2;font-size:.85rem}
+</style><main data-report-id="4fb85dd77bff190d" data-review-id="4fb85dd77bff190d"><div class="eyebrow">PatchGate / Change review</div>
+<h1>sample</h1><p class="summary">Evidence-linked review before merge or release.</p>
+<div class="status">REVIEW REQUIRED</div>
+<div class="stats"><span>1 changed files</span><span>+7 additions</span><span>-0 deletions</span><span>4 review prompts</span></div>
+<div class="toolbar"><strong id="progress" aria-live="polite">0/4 reviewed</strong><button type="button" id="export">Export decisions</button></div>
+<p class="note">Decisions stay in this browser when local storage is available. Export a copy before sharing or switching devices.</p>
+<h2>Findings</h2><article class="finding" data-id="0" data-path="app.py" data-line="4" data-rule="hardcoded-secret" data-initial="pending"><div class="meta"><span class="badge critical">critical</span><span>hardcoded-secret</span><span>app.py:4</span></div><p>A credential-like value was added to source.</p><pre>[REDACTED: potential credential]</pre><p class="action">Next: Remove it from the commit, rotate it if real, and load it from a secret store.</p><div class="review" role="group" aria-label="Review decision"><button type="button" data-decision="fix">Needs fix</button><button type="button" data-decision="accepted">Reviewed</button><button type="button" data-decision="pending">Reset</button><span class="decision-label" aria-live="polite">Pending</span></div></article>
+<article class="finding" data-id="1" data-path="app.py" data-line="5" data-rule="todo-marker" data-initial="pending"><div class="meta"><span class="badge low">low</span><span>todo-marker</span><span>app.py:5</span></div><p>An unfinished task was introduced in this change.</p><pre># TODO: add tests for the deployment path</pre><p class="action">Next: Resolve it or record a tracked follow-up before release.</p><div class="review" role="group" aria-label="Review decision"><button type="button" data-decision="fix">Needs fix</button><button type="button" data-decision="accepted">Reviewed</button><button type="button" data-decision="pending">Reset</button><span class="decision-label" aria-live="polite">Pending</span></div></article>
+<article class="finding" data-id="2" data-path="app.py" data-line="6" data-rule="subprocess-shell" data-initial="pending"><div class="meta"><span class="badge high">high</span><span>subprocess-shell</span><span>app.py:6</span></div><p>A shell-enabled subprocess can expose command injection paths.</p><pre>subprocess.run(&quot;deploy &quot; + target, shell=True)</pre><p class="action">Next: Pass an argument list and avoid shell=True unless inputs are tightly controlled.</p><div class="review" role="group" aria-label="Review decision"><button type="button" data-decision="fix">Needs fix</button><button type="button" data-decision="accepted">Reviewed</button><button type="button" data-decision="pending">Reset</button><span class="decision-label" aria-live="polite">Pending</span></div></article>
+<article class="finding" data-id="3" data-path="app.py" data-line="9" data-rule="broad-exception" data-initial="pending"><div class="meta"><span class="badge medium">medium</span><span>broad-exception</span><span>app.py:9</span></div><p>A broad exception handler may hide failures.</p><pre>except Exception:</pre><p class="action">Next: Catch expected errors and preserve actionable diagnostics.</p><div class="review" role="group" aria-label="Review decision"><button type="button" data-decision="fix">Needs fix</button><button type="button" data-decision="accepted">Reviewed</button><button type="button" data-decision="pending">Reset</button><span class="decision-label" aria-live="polite">Pending</span></div></article><footer><strong>Scope:</strong> Pattern matches are review prompts, not proven vulnerabilities. Only added lines in tracked changes are scanned; untracked and binary files are outside scope. This does not replace tests or security review. Avoid confidential input in shared reports.</footer></main><script>
+(() => {
+  const root = document.querySelector('main');
+  const cards = [...document.querySelectorAll('.finding')];
+  const key = 'patchgate:' + root.dataset.reviewId;
+  const allowed = new Set(['pending', 'fix', 'accepted']);
+  let decisions = {};
+  for (const card of cards) decisions[card.dataset.id] = card.dataset.initial;
+  try { decisions = JSON.parse(localStorage.getItem(key) || 'null') || decisions; } catch (_) { /* use imported defaults */ }
+  function paint() {
+    let reviewed = 0;
+    for (const card of cards) {
+      const choice = allowed.has(decisions[card.dataset.id]) ? decisions[card.dataset.id] : 'pending';
+      if (choice !== 'pending') reviewed++;
+      for (const button of card.querySelectorAll('button[data-decision]')) {
+        button.setAttribute('aria-pressed', String(button.dataset.decision === choice));
+      }
+      card.querySelector('.decision-label').textContent =
+        choice === 'fix' ? 'Needs fix' : choice === 'accepted' ? 'Reviewed' : 'Pending';
+    }
+    document.getElementById('progress').textContent = reviewed + '/' + cards.length + ' reviewed';
+  }
+  root.addEventListener('click', event => {
+    const button = event.target.closest('button[data-decision]');
+    if (!button) return;
+    const card = button.closest('.finding');
+    decisions[card.dataset.id] = button.dataset.decision;
+    try { localStorage.setItem(key, JSON.stringify(decisions)); } catch (_) { /* export remains available */ }
+    paint();
+  });
+  document.getElementById('export').addEventListener('click', () => {
+    const result = {
+      report_id: root.dataset.reportId,
+      title: root.querySelector('h1').textContent,
+      decisions: cards.map(card => ({
+        path: card.dataset.path, line: Number(card.dataset.line), rule: card.dataset.rule,
+        decision: allowed.has(decisions[card.dataset.id]) ? decisions[card.dataset.id] : 'pending'
+      }))
+    };
+    const url = URL.createObjectURL(new Blob([JSON.stringify(result, null, 2)], {type: 'application/json'}));
+    const link = document.createElement('a');
+    link.href = url; link.download = 'patchgate-decisions-' + root.dataset.reportId + '.json';
+    link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  paint();
+})();
+</script></html>

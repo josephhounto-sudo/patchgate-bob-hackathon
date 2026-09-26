@@ -1,0 +1,63 @@
+{
+  "title": "sample",
+  "report_id": "4fb85dd77bff190d",
+  "review_id": "4fb85dd77bff190d-f277d4e612ef",
+  "status": "REVIEW REQUIRED",
+  "stats": {
+    "files": 1,
+    "added": 7,
+    "removed": 0
+  },
+  "findings": [
+    {
+      "rule": "hardcoded-secret",
+      "severity": "critical",
+      "path": "app.py",
+      "line": 4,
+      "evidence": "[REDACTED: potential credential]",
+      "reason": "A credential-like value was added to source.",
+      "action": "Remove it from the commit, rotate it if real, and load it from a secret store.",
+      "decision": "fix"
+    },
+    {
+      "rule": "todo-marker",
+      "severity": "low",
+      "path": "app.py",
+      "line": 5,
+      "evidence": "# TODO: add tests for the deployment path",
+      "reason": "An unfinished task was introduced in this change.",
+      "action": "Resolve it or record a tracked follow-up before release.",
+      "decision": "accepted"
+    },
+    {
+      "rule": "subprocess-shell",
+      "severity": "high",
+      "path": "app.py",
+      "line": 6,
+      "evidence": "subprocess.run(\"deploy \" + target, shell=True)",
+      "reason": "A shell-enabled subprocess can expose command injection paths.",
+      "action": "Pass an argument list and avoid shell=True unless inputs are tightly controlled.",
+      "decision": "accepted"
+    },
+    {
+      "rule": "broad-exception",
+      "severity": "medium",
+      "path": "app.py",
+      "line": 9,
+      "evidence": "except Exception:",
+      "reason": "A broad exception handler may hide failures.",
+      "action": "Catch expected errors and preserve actionable diagnostics.",
+      "decision": "accepted"
+    }
+  ],
+  "review_summary": {
+    "accepted": 3,
+    "fix": 1,
+    "pending": 0
+  },
+  "limitations": [
+    "Pattern matches are review prompts, not proven vulnerabilities.",
+    "Only added lines in tracked changes are scanned; untracked and binary files are outside scope.",
+    "This does not replace tests or security review. Avoid confidential input in shared reports."
+  ]
+}

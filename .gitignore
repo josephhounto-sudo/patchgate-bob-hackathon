@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+.DS_Store
+report.html
+patchgate-decisions-*.json

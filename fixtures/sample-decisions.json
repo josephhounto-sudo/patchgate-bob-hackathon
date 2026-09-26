@@ -1,0 +1,30 @@
+{
+  "report_id": "4fb85dd77bff190d",
+  "title": "sample",
+  "decisions": [
+    {
+      "path": "app.py",
+      "line": 4,
+      "rule": "hardcoded-secret",
+      "decision": "fix"
+    },
+    {
+      "path": "app.py",
+      "line": 5,
+      "rule": "todo-marker",
+      "decision": "accepted"
+    },
+    {
+      "path": "app.py",
+      "line": 6,
+      "rule": "subprocess-shell",
+      "decision": "accepted"
+    },
+    {
+      "path": "app.py",
+      "line": 9,
+      "rule": "broad-exception",
+      "decision": "accepted"
+    }
+  ]
+}

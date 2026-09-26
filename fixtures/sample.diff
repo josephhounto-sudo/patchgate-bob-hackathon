@@ -1,0 +1,16 @@
+diff --git a/app.py b/app.py
+index 22f3e1c..735bbca 100644
+--- a/app.py
++++ b/app.py
+@@ -1,4 +1,11 @@
+ import subprocess
+ 
+ def deploy(target):
++    api_key = "demo_not_real_key_12345"
++    # TODO: add tests for the deployment path
++    subprocess.run("deploy " + target, shell=True)
++    try:
++        print("deployment started")
++    except Exception:
++        pass
+     return target
