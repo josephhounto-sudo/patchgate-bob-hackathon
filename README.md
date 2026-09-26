@@ -31,7 +31,7 @@ Developer workflow: change preparation → line-linked risk detection → record
 
 This initial baseline was prepared outside IBM Bob IDE. **It does not yet meet the hackathon's Bob usage requirement.** A participant must open this project in the provisioned IBM Bob IDE, use Bob substantially to implement and validate the next product feature, and capture genuine task-session summaries in `bob_sessions/`. Never fabricate screenshots or imply that the baseline was authored with Bob.
 
-The distributed project includes a local Git baseline commit so Bob's implementation can be reviewed as a real diff. It has no remote repository or account credentials.
+The distributed ZIP includes a local Git baseline commit so Bob's implementation can be reviewed as a real diff. The public project repository is [josephhounto-sudo/patchgate-bob-hackathon](https://github.com/josephhounto-sudo/patchgate-bob-hackathon); clone that repository to continue in Bob IDE. No account credentials are stored in the project.
 
 ## Next feature in Bob IDE
 
@@ -42,7 +42,7 @@ Implement the change-impact analyzer described in `BOB_TASK.md`. Then use Bob to
 ## Submission still needed
 
 - Genuine Bob IDE task session summary PNGs for each participant in `bob_sessions/`.
-- Public source repository, demonstration video, submission details and feedback form per the live guide and lablab form.
+- Genuine Bob-built changes, demonstration video, submission details and feedback form per the live guide and lablab form.
 - Verify final time zone and precise submission fields in the platform before submitting.
 
 See `PREMORTEM_2026-09-26.md` for the current go/no-go criteria and `DEMO_SCRIPT.md` for the recording plan. Neither document substitutes for real Bob task evidence.
