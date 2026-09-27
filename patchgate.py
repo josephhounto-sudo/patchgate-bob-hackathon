@@ -589,6 +589,12 @@ def render_html(data: dict) -> str:
     else:
         decision_controls = ('<p class="note">No pattern findings to decide in this report. '
                              'Review the function evidence below manually.</p>')
+    deletion_notice = (
+        '<p class="deletion-note"><strong>Manual review needed:</strong> This diff removes '
+        f'{s["removed"]} line' + ('s' if s["removed"] != 1 else '') +
+        '. Deleted code is not scanned for patterns; deletion-only function changes '
+        'may be absent from the impact list.</p>'
+    ) if s["removed"] else ''
     file_count = f'{s["files"]} changed file' + ('s' if s["files"] != 1 else '')
     removed_count = f'{s["removed"]} deletions' if s["removed"] == 0 else f'−{s["removed"]} deletions'
     return f'''<!doctype html><html lang="en"><meta charset="utf-8">
@@ -615,6 +621,7 @@ button[aria-pressed="true"]{{background:#0d706b;color:#fff;border-color:#0d706b}
 .decision-label{{margin-left:auto;color:#52636b;font-size:.85rem}}.toolbar{{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:18px}}
 .note{{color:#52636b;font-size:.83rem;margin:10px 0 24px}}
 .context{{color:#52636b;font-size:.94rem;margin:0 0 18px}}
+.deletion-note{{background:#fff3dc;border-left:4px solid #ae7415;padding:12px 16px;line-height:1.5}}
 .impact-section{{background:#fff;border:1px solid #d5dfe1;border-radius:6px;padding:20px;margin:20px 0}}
 .heuristic-label{{display:inline-block;background:#fff3dc;color:#744700;border:1px solid #e8c27a;border-radius:3px;padding:4px 9px;font-size:.82rem;font-weight:700;margin-bottom:12px}}
 .impact-list{{list-style:none;padding:0;margin:0}}
@@ -631,6 +638,7 @@ button[aria-pressed="true"]{{background:#0d706b;color:#fff;border-color:#0d706b}
 <h1>{esc(display_title)}</h1><p class="context">{esc(description)}</p>
 <div class="status">{esc(data["status"])}</div>
 <div class="stats"><span>{file_count}</span><span>+{s["added"]} additions</span><span>{removed_count}</span><span>{len(data["findings"])} review prompts</span></div>
+{deletion_notice}
 {decision_controls}
 {impact_section}
 <h2>Findings</h2>{findings}<footer><strong>Scope:</strong> {esc(' '.join(data['limitations']))}</footer></main>''' + REVIEW_SCRIPT + '</html>'

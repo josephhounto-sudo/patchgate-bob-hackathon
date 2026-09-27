@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081418">
+  <meta name="description" content="PatchGate turns a Git diff into a traceable human review: risk prompts, changed-function evidence, and portable decisions.">
+  <title>PatchGate — Every change deserves evidence</title>
+  <style>
+    :root{font:16px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#e9f2ee;background:#081418;scroll-behavior:smooth}
+    *{box-sizing:border-box}
+    body{margin:0;overflow-x:hidden}
+    button,a{font:inherit}
+    a{color:inherit;text-decoration:none}
+    button:focus-visible,a:focus-visible{outline:3px solid #9be3bd;outline-offset:4px}
+    .shell{width:min(1240px,calc(100% - 48px));margin:auto}
+    .topbar{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid #244044}
+    .brand{display:inline-flex;align-items:center;gap:11px;font-size:1.11rem;font-weight:800;letter-spacing:-.04em}
+    .mark{width:31px;height:31px;display:grid;place-items:center;color:#081418;background:#99e6ba;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);font-size:1.1rem}
+    .topbar nav{display:flex;align-items:center;gap:28px;font-size:.86rem;color:#a9bdb8}
+    .topbar nav a:hover,.footer a:hover{color:#a7f0c5}
+    .topbar .nav-cta{color:#091b18;background:#a5e9c2;border-radius:6px;padding:9px 15px;font-weight:750}
+    .hero{position:relative;padding:82px 0 72px;overflow:hidden}
+    .hero:before{content:"";position:absolute;z-index:-1;top:-220px;right:-140px;width:750px;height:750px;background:radial-gradient(circle,#143a3c 0,#0d272a 34%,transparent 70%);pointer-events:none}
+    .hero-grid{display:grid;grid-template-columns:1.04fr .96fr;gap:48px;align-items:center}
+    .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.19em;font-weight:800;color:#9ee9bd}
+    .eyebrow:before{content:"";display:inline-block;width:21px;height:2px;background:#9ee9bd;vertical-align:middle;margin-right:11px}
+    h1,h2,h3,p{margin-top:0}
+    h1{font-size:clamp(3.5rem,6.3vw,6.5rem);line-height:.99;letter-spacing:-.078em;margin:24px 0}
+    h1 em{font-style:normal;color:#a4ecc2}
+    .lead{max-width:610px;color:#bed0cb;font-size:1.17rem;line-height:1.65}
+    .actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:32px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:10px 19px;border:1px solid #58736c;border-radius:7px;font-weight:750;font-size:.9rem;transition:transform .2s,background .2s,border-color .2s}
+    .button:hover{transform:translateY(-2px);border-color:#a5e9c2}
+    .button.primary{color:#081b18;background:#a5e9c2;border-color:#a5e9c2}
+    .button.primary:hover{background:#ccf6d8}
+    .button.secondary{color:#e8f2ed;background:#102529}
+    .hero-foot{margin-top:36px;color:#91aaa3;font-size:.8rem}
+    .hero-foot span{display:inline-block;margin-right:18px}
+    .terminal{box-shadow:0 35px 90px #0008;transform:rotate(1.5deg);border:1px solid #385b56;background:#101f25;border-radius:14px;overflow:hidden;min-width:0}
+    .terminal-head{height:42px;display:flex;align-items:center;gap:7px;padding:0 17px;border-bottom:1px solid #28413f;background:#14282d;color:#9ab4ae;font-size:.74rem}
+    .dot{width:7px;height:7px;border-radius:50%;background:#6a8d86}.dot:nth-child(2){background:#d4ad64}.dot:nth-child(3){background:#93d6ac}
+    .terminal-head span:last-child{margin-left:auto;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+    .terminal-body{padding:25px;font: .81rem/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden}
+    .terminal-body .muted{color:#71918a}.terminal-body .green{color:#a6efbd}.terminal-body .amber{color:#f4cc85}.terminal-body .red{color:#f5a7a0}
+    .terminal-body .indent{padding-left:16px}.terminal-body .line{border-top:1px solid #28403d;margin:15px 0}
+    .signal{display:flex;align-items:center;gap:10px;margin-top:5px;padding:12px 14px;border-radius:5px;background:#1c3c38;border:1px solid #347267;color:#c3f7d7;font-size:.8rem}
+    .section{padding:82px 0;border-top:1px solid #244044}
+    .section-heading{max-width:730px;margin-bottom:38px}
+    h2{font-size:clamp(2.25rem,4vw,3.8rem);line-height:1.08;letter-spacing:-.065em;margin:14px 0}
+    .section-heading p{font-size:1.02rem;color:#a9c0b8}
+    .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .flow article{min-height:254px;background:#10252a;border:1px solid #2d4b48;border-radius:10px;padding:26px;position:relative;overflow:hidden}
+    .flow article:after{content:attr(data-step);position:absolute;right:20px;top:12px;font-size:5.6rem;line-height:1;font-weight:900;letter-spacing:-.08em;color:#1e393b}
+    .flow .icon{display:grid;place-items:center;width:39px;height:39px;background:#20463f;border:1px solid #447561;border-radius:8px;color:#a8edc4;font-weight:900}
+    .flow h3{font-size:1.3rem;letter-spacing:-.04em;margin:26px 0 8px;position:relative;z-index:1}
+    .flow p{color:#a9c0b8;font-size:.91rem;margin-bottom:0;position:relative;z-index:1}
+    .demo-band{background:#e9f0e9;color:#18302d;padding:80px 0 94px}
+    .demo-band .eyebrow{color:#32785d}.demo-band .eyebrow:before{background:#32785d}
+    .demo-band .section-heading p{color:#536963}
+    .tabs{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:18px}
+    .tab{cursor:pointer;border:1px solid #bbcfc3;background:#f7faf7;color:#33564c;border-radius:6px;padding:11px 17px;font-weight:750}
+    .tab[aria-selected="true"]{background:#183a34;color:#fff;border-color:#183a34}
+    .demo-frame{border:1px solid #acc6b6;border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 24px 70px #1a403029}
+    .frame-top{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid #dbe6dc;background:#f7faf7;color:#6c8175;font: .76rem ui-monospace,SFMono-Regular,Consolas,monospace}
+    .frame-top .dot{background:#a8bdb0}.frame-top .dot:nth-child(2){background:#a8bdb0}.frame-top .dot:nth-child(3){background:#a8bdb0}
+    .frame-top span:last-child{margin-left:12px}
+    iframe{display:block;width:100%;height:675px;border:0;background:#f4f7f7}
+    .frame-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;background:#f7faf7;border-top:1px solid #dbe6dc;padding:15px 20px;font-size:.84rem;color:#52665c}
+    .frame-footer a{color:#126444;font-weight:800;text-decoration:underline;text-underline-offset:3px}
+    .limitations{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+    .limitations p,.limitations li{color:#aac0b7}
+    .limitations ul{margin:0;padding-left:20px}
+    .limitations li{margin:0 0 16px}
+    .code{font: .85rem/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;background:#10272b;border:1px solid #2d514a;border-radius:9px;padding:25px;overflow-x:auto;color:#a8eac1}
+    .code .comment{color:#8ba8a0}
+    .footer{display:flex;justify-content:space-between;gap:24px;align-items:center;flex-wrap:wrap;padding:29px 0;color:#94aca3;font-size:.83rem}
+    .footer a{margin-left:20px}
+    @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.terminal{transform:none;max-width:650px}.flow{grid-template-columns:1fr}.flow article{min-height:185px}.limitations{grid-template-columns:1fr;gap:15px}}
+    @media(max-width:600px){.shell{width:min(100% - 32px,1240px)}.topbar{height:68px}.topbar nav>a:not(.nav-cta){display:none}.hero{padding:57px 0 63px}.hero-grid{gap:32px}h1{font-size:3.55rem}.terminal-body{padding:17px;font-size:.65rem}.section{padding:60px 0}.demo-band{padding:60px 0}.tab{flex:1}iframe{height:600px}.frame-top span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.frame-footer{align-items:flex-start}.footer{align-items:flex-start}.footer a{margin:0 15px 0 0}}
+    @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}.button{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="PatchGate home"><span class="mark" aria-hidden="true">⌁</span>PatchGate<span style="color:#8daaa1;font-weight:400">/</span></a>
+      <nav aria-label="Main navigation">
+        <a href="#how">How it works</a><a href="#demo">Interactive demo</a><a href="#scope">Scope</a>
+        <a class="nav-cta" href="#demo">Explore the report ↗</a>
+      </nav>
+    </header>
+  </div>
+  <main id="top">
+    <section class="hero">
+      <div class="shell hero-grid">
+        <div>
+          <div class="eyebrow">A review layer for code changes</div>
+          <h1>Every change deserves <em>evidence.</em></h1>
+          <p class="lead">A diff tells you what changed. PatchGate turns it into a focused human review: lines worth a second look, direct test-call evidence, and decisions you can export.</p>
+          <div class="actions"><a class="button primary" href="#demo">Explore the demo <span aria-hidden="true">↗</span></a><a class="button secondary" href="https://github.com/josephhounto-sudo/patchgate-bob-hackathon" target="_blank" rel="noopener noreferrer">View source ↗</a></div>
+          <p class="hero-foot"><span>◈ Local-first</span><span>◇ Python standard library</span><span>○ Human-owned decisions</span></p>
+        </div>
+        <div class="terminal" aria-label="Illustrative code review summary">
+          <div class="terminal-head"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span>patchgate / impact.diff</span></div>
+          <div class="terminal-body">
+            <div class="muted">$ python patchgate.py --diff impact.diff</div>
+            <div class="line"></div>
+            <div class="green">↳ 2 changed functions</div>
+            <div class="indent">calculate_total <span class="green">→ test call: line 9</span></div>
+            <div class="indent">authorize_payment <span class="amber">→ verify manually</span></div>
+            <div class="line"></div>
+            <div class="amber">↳ 2 deleted lines require human review</div>
+            <div class="signal"><span aria-hidden="true">◇</span> Evidence found ≠ coverage proven</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="how" class="section">
+      <div class="shell">
+        <div class="section-heading"><div class="eyebrow">The workflow</div><h2>From patch to decision.</h2><p>Three steps, one readable trail. The tool surfaces evidence; the reviewer makes the call.</p></div>
+        <div class="flow">
+          <article data-step="01"><div class="icon" aria-hidden="true">±</div><h3>Inspect the diff</h3><p>Review prompts highlight additions matching a small set of explicit patterns. Deletions are called out for manual inspection.</p></article>
+          <article data-step="02"><div class="icon" aria-hidden="true">⌁</div><h3>Trace the change</h3><p>For changed top-level Python functions, see direct calls found inside test functions, with file and line references.</p></article>
+          <article data-step="03"><div class="icon" aria-hidden="true">✓</div><h3>Record a decision</h3><p>Mark each prompt Reviewed or Needs fix, then export a JSON review record tied to that exact diff.</p></article>
+        </div>
+      </div>
+    </section>
+    <section id="demo" class="demo-band">
+      <div class="shell">
+        <div class="section-heading"><div class="eyebrow">Try the real reports</div><h2>See the evidence yourself.</h2><p>These are generated from synthetic fixtures. Choose a report and interact with it below. No account or data upload is needed.</p></div>
+        <div class="tabs" role="tablist" aria-label="Demo reports">
+          <button type="button" class="tab" id="tab-review" role="tab" aria-selected="true" aria-controls="report-frame">01 / Security prompts</button>
+          <button type="button" class="tab" id="tab-impact" role="tab" aria-selected="false" aria-controls="report-frame">02 / Function impact</button>
+        </div>
+        <div class="demo-frame">
+          <div class="frame-top"><i class="dot"></i><i class="dot"></i><i class="dot"></i><span id="frame-label">demo.html · synthetic security example</span></div>
+          <iframe id="report-frame" title="PatchGate security report" src="demo.html" loading="lazy"></iframe>
+          <div class="frame-footer"><span id="frame-hint">Try “Needs fix” and “Reviewed”, then export the decisions.</span><a id="frame-link" href="demo.html" target="_blank" rel="noopener noreferrer">Open full report ↗</a></div>
+        </div>
+      </div>
+    </section>
+    <section id="scope" class="section">
+      <div class="shell limitations">
+        <div><div class="eyebrow">Clear limits build trust</div><h2>Evidence is a starting point.</h2><p>PatchGate is a deterministic review aid. A direct name match does not prove the test executed the changed lines. No match does not prove a function is untested.</p></div>
+        <div><ul><li>Only tracked text changes are scanned; untracked and binary files are outside scope.</li><li>Deletion-only changes may be missing from the function impact list and are flagged for manual review.</li><li>Pattern matches are prompts, never confirmed vulnerabilities. The export records decisions, not certified approval.</li></ul>
+          <div class="code"><span class="comment"># Run locally with Python 3.10+</span><br>python3 patchgate.py --diff fixtures/impact.diff<br>python3 -m unittest discover -s tests</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div class="shell"><footer class="footer"><span>PatchGate · A human review with a traceable trail.</span><div><a href="#top">Back to top ↑</a><a href="https://github.com/josephhounto-sudo/patchgate-bob-hackathon" target="_blank" rel="noopener noreferrer">GitHub ↗</a></div></footer></div>
+  <script>
+    (() => {
+      const tabs = [document.getElementById('tab-review'), document.getElementById('tab-impact')];
+      const frame = document.getElementById('report-frame');
+      const label = document.getElementById('frame-label');
+      const hint = document.getElementById('frame-hint');
+      const link = document.getElementById('frame-link');
+      const reports = [
+        {file:'demo.html',title:'PatchGate security report',label:'demo.html · synthetic security example',hint:'Try “Needs fix” and “Reviewed”, then export the decisions.'},
+        {file:'impact.html',title:'PatchGate function impact report',label:'impact.html · synthetic function impact example',hint:'Look for the call at line 9 and the manual verification prompt.'}
+      ];
+      function select(index) {
+        tabs.forEach((tab, i) => {tab.setAttribute('aria-selected', String(i === index)); tab.tabIndex = i === index ? 0 : -1;});
+        const report = reports[index];
+        if (frame.getAttribute('src') !== report.file) frame.setAttribute('src', report.file);
+        frame.title = report.title; label.textContent = report.label; hint.textContent = report.hint; link.href = report.file;
+      }
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => select(index));
+        tab.addEventListener('keydown', event => {
+          if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+          event.preventDefault();
+          const next = (index + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length;
+          select(next); tabs[next].focus();
+        });
+      });
+      select(0);
+    })();
+  </script>
+</body>
+</html>

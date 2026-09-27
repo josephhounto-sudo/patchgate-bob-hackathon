@@ -22,6 +22,7 @@ button[aria-pressed="true"]{background:#0d706b;color:#fff;border-color:#0d706b}
 .decision-label{margin-left:auto;color:#52636b;font-size:.85rem}.toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:18px}
 .note{color:#52636b;font-size:.83rem;margin:10px 0 24px}
 .context{color:#52636b;font-size:.94rem;margin:0 0 18px}
+.deletion-note{background:#fff3dc;border-left:4px solid #ae7415;padding:12px 16px;line-height:1.5}
 .impact-section{background:#fff;border:1px solid #d5dfe1;border-radius:6px;padding:20px;margin:20px 0}
 .heuristic-label{display:inline-block;background:#fff3dc;color:#744700;border:1px solid #e8c27a;border-radius:3px;padding:4px 9px;font-size:.82rem;font-weight:700;margin-bottom:12px}
 .impact-list{list-style:none;padding:0;margin:0}
@@ -38,6 +39,7 @@ button[aria-pressed="true"]{background:#0d706b;color:#fff;border-color:#0d706b}
 <h1>Security review</h1><p class="context">Synthetic patch: review the four prompts, record decisions, then export them.</p>
 <div class="status">REVIEW REQUIRED</div>
 <div class="stats"><span>1 changed file</span><span>+7 additions</span><span>0 deletions</span><span>4 review prompts</span></div>
+
 <div class="toolbar"><strong id="progress" aria-live="polite">0/4 reviewed</strong><button type="button" id="export">Export decisions</button></div><p class="note">Decisions stay in this browser when local storage is available. Export a copy before sharing or switching devices.</p>
 <section class="impact-section"><h2>Change Impact Evidence</h2><p class="heuristic-label">Name-based heuristic — not a coverage report</p><p class="empty">No Python function changes detected in this diff.</p></section>
 <h2>Findings</h2><article class="finding" data-id="0" data-path="app.py" data-line="4" data-rule="hardcoded-secret" data-initial="pending"><div class="meta"><span class="badge critical">critical</span><span>hardcoded-secret</span><span>app.py:4</span></div><p>A credential-like value was added to source.</p><pre>[REDACTED: potential credential]</pre><p class="action">Next: Remove it from the commit, rotate it if real, and load it from a secret store.</p><div class="review" role="group" aria-label="Review decision"><button type="button" data-decision="fix">Needs fix</button><button type="button" data-decision="accepted">Reviewed</button><button type="button" data-decision="pending">Reset</button><span class="decision-label" aria-live="polite">Pending</span></div></article>

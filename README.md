@@ -1,11 +1,17 @@
 # PatchGate
 
-An evidence-first change review for small engineering teams. It reads a Git diff, highlights added lines that deserve human review, and produces a shareable HTML report. The first slice is deterministic and runs locally with Python 3.10+ and no external packages.
+An evidence-first change review for small engineering teams. It reads a Git diff, highlights added lines that deserve human review, links changed top-level Python functions to direct calls found in test functions, and produces a shareable HTML report. It is deterministic and runs locally with Python 3.10+ and no external packages.
 
 ## Quick demo
 
+Open `index.html` for the guided, interactive showcase. It embeds the two
+generated synthetic reports and works as a static site without a backend.
+The reports are committed for preview; regenerate them after changing the
+analyzer:
+
 ```bash
 python3 patchgate.py --diff fixtures/sample.diff --out demo.html --json demo.json
+python3 patchgate.py --diff fixtures/impact.diff --out impact.html --json impact.json
 python3 -m unittest discover -s tests -v
 ```
 
@@ -25,29 +31,29 @@ python3 patchgate.py --diff fixtures/sample.diff --decisions fixtures/sample-dec
 
 The tool never executes changed code. With `--repo`, it compares tracked working-tree changes to `HEAD` (or the supplied base revision), including staged and unstaged edits; untracked and binary files are outside scope. Findings are prompts to review, not proof of vulnerabilities. Credential-like assignments matched by the configured pattern are masked in the report, but this is not comprehensive redaction. Do not put secrets or personal data in demonstration diffs or screenshots.
 
+To view the impact example, run:
+
+```bash
+python3 patchgate.py --diff fixtures/impact.diff --out impact.html --json impact.json
+```
+
+In that example, `calculate_total` has a direct call in `tests/test_checkout_example.py:9`; `authorize_payment` has no name match. This is static name matching, not runtime coverage. It can associate unrelated functions with the same name, miss indirect calls, and miss deletion-only function changes. The HTML report explicitly flags deletions for manual review.
+
 ## Hackathon purpose
 
 Developer workflow: change preparation → line-linked risk detection → recorded human decision → release readiness. The measurable baseline is time spent locating risky additions and preparing a review summary. The demonstrator includes a synthetic diff with a fake credential, shell-enabled subprocess, broad exception and TODO.
 
-This initial baseline was prepared outside IBM Bob IDE. **It does not yet meet the hackathon's Bob usage requirement.** A participant must open this project in the provisioned IBM Bob IDE, use Bob substantially to implement and validate the next product feature, and capture genuine task-session summaries in `bob_sessions/`. Never fabricate screenshots or imply that the baseline was authored with Bob.
+The initial baseline was prepared outside IBM Bob IDE. Bob subsequently implemented and reviewed the impact feature; see `reviews/bob_review.md` and the repository history. Session screenshots, where required, must be genuine. Never fabricate them or imply the baseline was authored with Bob.
 
 The distributed ZIP includes a local Git baseline commit so Bob's implementation can be reviewed as a real diff. The public project repository is [josephhounto-sudo/patchgate-bob-hackathon](https://github.com/josephhounto-sudo/patchgate-bob-hackathon); clone that repository to continue in Bob IDE. No account credentials are stored in the project.
 
-## Next feature in Bob IDE
+## Development history
 
-Implement the change-impact analyzer described in `BOB_TASK.md`. Then use Bob to run the reviewer workflow in `BOB_REVIEW_TASK.md` and document the actual results. The two tasks make Bob's contribution visible in implementation and review. Keep an evaluation showing before/after on the fixture.
+`BOB_TASK.md` and `BOB_REVIEW_TASK.md` are historical task prompts, already executed. `fixtures/impact.diff`, `examples/checkout/app.py` and `tests/test_checkout_example.py` form the synthetic acceptance case.
 
-`fixtures/impact.diff`, `examples/checkout/app.py` and `tests/test_checkout_example.py` form a synthetic acceptance case: one changed function has a matching test call and one does not. The baseline analyzer does not yet produce impact links.
+The IBM Bob 2.0 hackathon has ended. `PREMORTEM_2026-09-26.md` and `DEMO_SCRIPT.md` document that event's preparation, not a current submission checklist.
 
-## Submission still needed
-
-- Genuine Bob IDE task session summary PNGs for each participant in `bob_sessions/`.
-- Genuine Bob-built changes, demonstration video, submission details and feedback form per the live guide and lablab form.
-- Verify final time zone and precise submission fields in the platform before submitting.
-
-See `PREMORTEM_2026-09-26.md` for the current go/no-go criteria and `DEMO_SCRIPT.md` for the recording plan. Neither document substitutes for real Bob task evidence.
-
-Before submission, run `python3 preflight.py --video-url https://your-public-video-url`. It checks local tests, Git state, a configured remote, the presence and basic PNG validity of Bob summaries, and whether a video URL was supplied. It cannot authenticate the screenshots, confirm a URL is public, or submit the lablab form; verify those manually.
+`preflight.py` is specific to the IBM Bob event. It checks local tests, Git state, a configured remote, the presence and basic PNG validity of Bob summaries, and whether a video URL was supplied. It cannot authenticate screenshots, confirm a URL is public, or submit a form.
 
 No part of this project uses code, datasets or patient information from Sentinelle or medical records.
 

@@ -511,6 +511,13 @@ class ImpactAcceptanceFixtureTests(unittest.TestCase):
 
 class HtmlImpactSectionTests(unittest.TestCase):
 
+    def test_deletions_are_called_out_for_manual_review(self):
+        page = render_html(report(IMPACT_DIFF, "impact", repo_root=PROJECT_ROOT))
+        self.assertIn("Manual review needed", page)
+        self.assertIn("deletion-only function changes", page)
+        clean_page = render_html(report(FIXTURE, "sample"))
+        self.assertNotIn("deletion-only function changes", clean_page)
+
     def test_impact_section_heading_present(self):
         data = report(IMPACT_DIFF, "impact", repo_root=PROJECT_ROOT)
         page = render_html(data)
