@@ -21,6 +21,7 @@ button:hover,button:focus-visible{border-color:#0d706b;background:#eaf4f2}button
 button[aria-pressed="true"]{background:#0d706b;color:#fff;border-color:#0d706b}
 .decision-label{margin-left:auto;color:#52636b;font-size:.85rem}.toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:18px}
 .note{color:#52636b;font-size:.83rem;margin:10px 0 24px}
+.context{color:#52636b;font-size:.94rem;margin:0 0 18px}
 .impact-section{background:#fff;border:1px solid #d5dfe1;border-radius:6px;padding:20px;margin:20px 0}
 .heuristic-label{display:inline-block;background:#fff3dc;color:#744700;border:1px solid #e8c27a;border-radius:3px;padding:4px 9px;font-size:.82rem;font-weight:700;margin-bottom:12px}
 .impact-list{list-style:none;padding:0;margin:0}
@@ -34,11 +35,10 @@ button[aria-pressed="true"]{background:#0d706b;color:#fff;border-color:#0d706b}
 .impact-summary{color:#52636b;font-size:.88rem;margin-top:14px;border-top:1px solid #e5ebec;padding-top:12px}
 @media(max-width:640px){main{padding:24px 16px 48px}h1{font-size:1.9rem}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats span:nth-child(2){border-right:0}.stats span:nth-child(-n+2){border-bottom:1px solid #d5dfe1}.decision-label{margin-left:0;width:100%}}
 </style><main data-report-id="9dbf4d082f6e7828" data-review-id="9dbf4d082f6e7828"><div class="eyebrow">PatchGate / Change review</div>
-<h1>impact</h1><p class="summary">Evidence-linked review before merge or release.</p>
+<h1>Changed function evidence</h1><p class="context">Two changed functions: one direct test call found, one needs manual verification.</p>
 <div class="status">READY FOR HUMAN REVIEW</div>
-<div class="stats"><span>1 changed files</span><span>+3 additions</span><span>-2 deletions</span><span>0 review prompts</span></div>
-<div class="toolbar"><strong id="progress" aria-live="polite">0/0 reviewed</strong><button type="button" id="export">Export decisions</button></div>
-<p class="note">Decisions stay in this browser when local storage is available. Export a copy before sharing or switching devices.</p>
+<div class="stats"><span>1 changed file</span><span>+3 additions</span><span>−2 deletions</span><span>0 review prompts</span></div>
+<p class="note">No pattern findings to decide in this report. Review the function evidence below manually.</p>
 <section class="impact-section"><h2>Change Impact Evidence</h2><p class="heuristic-label">Name-based heuristic — not a coverage report</p><ul class="impact-list"><li class="impact-row matched"><span class="fn-name">calculate_total</span> <span class="fn-loc">examples/checkout/app.py:6</span><ul class="test-list"><li class="test-match">tests/test_checkout_example.py:9</li></ul></li>
 <li class="impact-row no-match"><span class="fn-name">authorize_payment</span> <span class="fn-loc">examples/checkout/app.py:11</span><span class="no-match-label">No name reference found in test files — manual verification recommended</span></li></ul><p class="impact-summary">1 function had a name-based reference found in test files. 1 function had no name reference found in test files; manual verification is recommended before release. A name reference does not confirm the test exercises the changed lines, and its absence does not prove the function lacks test coverage. This analysis cannot detect indirect calls, dynamic dispatch, or runtime behaviour.</p></section>
 <h2>Findings</h2><p class="empty">No configured patterns matched added lines.</p><footer><strong>Scope:</strong> Pattern matches are review prompts, not proven vulnerabilities. Only added lines in tracked changes are scanned; untracked and binary files are outside scope. This does not replace tests or security review. Avoid confidential input in shared reports.</footer></main><script>
@@ -61,7 +61,8 @@ button[aria-pressed="true"]{background:#0d706b;color:#fff;border-color:#0d706b}
       card.querySelector('.decision-label').textContent =
         choice === 'fix' ? 'Needs fix' : choice === 'accepted' ? 'Reviewed' : 'Pending';
     }
-    document.getElementById('progress').textContent = reviewed + '/' + cards.length + ' reviewed';
+    const progress = document.getElementById('progress');
+    if (progress) progress.textContent = reviewed + '/' + cards.length + ' reviewed';
   }
   root.addEventListener('click', event => {
     const button = event.target.closest('button[data-decision]');
@@ -71,7 +72,8 @@ button[aria-pressed="true"]{background:#0d706b;color:#fff;border-color:#0d706b}
     try { localStorage.setItem(key, JSON.stringify(decisions)); } catch (_) { /* export remains available */ }
     paint();
   });
-  document.getElementById('export').addEventListener('click', () => {
+  const exportButton = document.getElementById('export');
+  if (exportButton) exportButton.addEventListener('click', () => {
     const result = {
       report_id: root.dataset.reportId,
       title: root.querySelector('h1').textContent,

@@ -432,7 +432,8 @@ REVIEW_SCRIPT = r'''<script>
       card.querySelector('.decision-label').textContent =
         choice === 'fix' ? 'Needs fix' : choice === 'accepted' ? 'Reviewed' : 'Pending';
     }
-    document.getElementById('progress').textContent = reviewed + '/' + cards.length + ' reviewed';
+    const progress = document.getElementById('progress');
+    if (progress) progress.textContent = reviewed + '/' + cards.length + ' reviewed';
   }
   root.addEventListener('click', event => {
     const button = event.target.closest('button[data-decision]');
@@ -442,7 +443,8 @@ REVIEW_SCRIPT = r'''<script>
     try { localStorage.setItem(key, JSON.stringify(decisions)); } catch (_) { /* export remains available */ }
     paint();
   });
-  document.getElementById('export').addEventListener('click', () => {
+  const exportButton = document.getElementById('export');
+  if (exportButton) exportButton.addEventListener('click', () => {
     const result = {
       report_id: root.dataset.reportId,
       title: root.querySelector('h1').textContent,
@@ -567,6 +569,28 @@ def render_html(data: dict) -> str:
     findings = "\n".join(cards) or '<p class="empty">No configured patterns matched added lines.</p>'
     s = data["stats"]
     impact_section = _render_impact_section(data.get("impact", []))
+    sample = data["title"] == "sample"
+    impact_example = data["title"] == "impact"
+    display_title = ("Security review" if sample else
+                     "Changed function evidence" if impact_example else data["title"])
+    description = ("Synthetic patch: review the four prompts, record decisions, then export them."
+                   if sample else
+                   "Two changed functions: one direct test call found, one needs manual verification."
+                   if impact_example else
+                   "Evidence linked to this change before merge or release.")
+    if data["findings"]:
+        decision_controls = (
+            f'<div class="toolbar"><strong id="progress" aria-live="polite">'
+            f'0/{len(data["findings"])} reviewed</strong>'
+            '<button type="button" id="export">Export decisions</button></div>'
+            '<p class="note">Decisions stay in this browser when local storage is available. '
+            'Export a copy before sharing or switching devices.</p>'
+        )
+    else:
+        decision_controls = ('<p class="note">No pattern findings to decide in this report. '
+                             'Review the function evidence below manually.</p>')
+    file_count = f'{s["files"]} changed file' + ('s' if s["files"] != 1 else '')
+    removed_count = f'{s["removed"]} deletions' if s["removed"] == 0 else f'−{s["removed"]} deletions'
     return f'''<!doctype html><html lang="en"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PatchGate | {esc(data["title"])}</title>
@@ -590,6 +614,7 @@ button:hover,button:focus-visible{{border-color:#0d706b;background:#eaf4f2}}butt
 button[aria-pressed="true"]{{background:#0d706b;color:#fff;border-color:#0d706b}}
 .decision-label{{margin-left:auto;color:#52636b;font-size:.85rem}}.toolbar{{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:18px}}
 .note{{color:#52636b;font-size:.83rem;margin:10px 0 24px}}
+.context{{color:#52636b;font-size:.94rem;margin:0 0 18px}}
 .impact-section{{background:#fff;border:1px solid #d5dfe1;border-radius:6px;padding:20px;margin:20px 0}}
 .heuristic-label{{display:inline-block;background:#fff3dc;color:#744700;border:1px solid #e8c27a;border-radius:3px;padding:4px 9px;font-size:.82rem;font-weight:700;margin-bottom:12px}}
 .impact-list{{list-style:none;padding:0;margin:0}}
@@ -603,11 +628,10 @@ button[aria-pressed="true"]{{background:#0d706b;color:#fff;border-color:#0d706b}
 .impact-summary{{color:#52636b;font-size:.88rem;margin-top:14px;border-top:1px solid #e5ebec;padding-top:12px}}
 @media(max-width:640px){{main{{padding:24px 16px 48px}}h1{{font-size:1.9rem}}.stats{{grid-template-columns:repeat(2,minmax(0,1fr))}}.stats span:nth-child(2){{border-right:0}}.stats span:nth-child(-n+2){{border-bottom:1px solid #d5dfe1}}.decision-label{{margin-left:0;width:100%}}}}
 </style><main data-report-id="{esc(data['report_id'])}" data-review-id="{esc(data['review_id'])}"><div class="eyebrow">PatchGate / Change review</div>
-<h1>{esc(data["title"])}</h1><p class="summary">Evidence-linked review before merge or release.</p>
+<h1>{esc(display_title)}</h1><p class="context">{esc(description)}</p>
 <div class="status">{esc(data["status"])}</div>
-<div class="stats"><span>{s["files"]} changed files</span><span>+{s["added"]} additions</span><span>-{s["removed"]} deletions</span><span>{len(data["findings"])} review prompts</span></div>
-<div class="toolbar"><strong id="progress" aria-live="polite">0/{len(data['findings'])} reviewed</strong><button type="button" id="export">Export decisions</button></div>
-<p class="note">Decisions stay in this browser when local storage is available. Export a copy before sharing or switching devices.</p>
+<div class="stats"><span>{file_count}</span><span>+{s["added"]} additions</span><span>{removed_count}</span><span>{len(data["findings"])} review prompts</span></div>
+{decision_controls}
 {impact_section}
 <h2>Findings</h2>{findings}<footer><strong>Scope:</strong> {esc(' '.join(data['limitations']))}</footer></main>''' + REVIEW_SCRIPT + '</html>'
 
