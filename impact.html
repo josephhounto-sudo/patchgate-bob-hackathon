@@ -2,34 +2,37 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>PatchGate | impact</title>
 <style>
-:root{font:16px/1.55 system-ui,sans-serif;color:#e8eef6;background:#0b1420}
-*{box-sizing:border-box}body{margin:0}main{max-width:960px;margin:auto;padding:36px 20px 80px}
-.eyebrow{color:#87d7c6;letter-spacing:.17em;text-transform:uppercase;font-size:.75rem;font-weight:700}
-h1{font-size:clamp(2rem,6vw,4rem);margin:8px 0}h2{margin-top:36px}
-.summary{color:#9eafc2}.status{display:inline-block;padding:9px 13px;border-radius:8px;background:#173b40;color:#9ef3d5;font-weight:800}
-.stats{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}.stats span{background:#142337;border:1px solid #2a4058;border-radius:10px;padding:12px 16px}
-.finding{background:#142337;border:1px solid #2a4058;border-radius:12px;padding:20px;margin:13px 0}
-.meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:#a7b9cc;font-size:.84rem}
-.badge{text-transform:uppercase;border-radius:4px;padding:3px 8px;font-weight:800;color:#111}
-.critical{background:#ff8a8a}.high{background:#ffbd84}.medium{background:#ffe18a}.low{background:#9fdfd2}
-pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#d6ecfa;background:#0b1420;padding:12px;border-radius:8px}
-.action{color:#9fe3d3}footer{border-top:1px solid #2a4058;padding-top:18px;color:#a7b9cc}
-.review{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid #2a4058;padding-top:14px}
-button{font:inherit;border:1px solid #53839a;border-radius:7px;padding:7px 11px;background:#20364b;color:#eef6fc;cursor:pointer}
-button:hover,button:focus-visible{background:#31536d}button[aria-pressed="true"]{background:#9fe3d3;color:#09251e;border-color:#9fe3d3}
-.decision-label{margin-left:auto;color:#b9cddd}.toolbar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:20px}
-.note{color:#9eafc2;font-size:.85rem}
-.impact-section{background:#101e30;border:1px solid #2a4058;border-radius:12px;padding:20px;margin:20px 0}
-.heuristic-label{display:inline-block;background:#2a2000;color:#ffe18a;border:1px solid #8a6a00;border-radius:4px;padding:4px 10px;font-size:.82rem;font-weight:700;margin-bottom:12px}
+:root{font:15px/1.5 system-ui,sans-serif;color:#18262c;background:#f4f7f7}
+*{box-sizing:border-box}body{margin:0}main{max-width:1040px;margin:auto;padding:32px 24px 72px}
+.eyebrow{color:#0d706b;letter-spacing:.12em;text-transform:uppercase;font-size:.74rem;font-weight:800}
+h1{font-size:2.35rem;line-height:1.15;margin:7px 0 6px}h2{font-size:1.25rem;margin:34px 0 12px}
+.summary{color:#52636b;margin:0 0 18px}.status{display:inline-block;padding:6px 10px;border:1px solid #e8c27a;border-radius:4px;background:#fff3dc;color:#744700;font-size:.78rem;font-weight:800;letter-spacing:.04em}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:22px;border:1px solid #d5dfe1;border-radius:6px;background:#fff}
+.stats span{padding:13px 16px;border-right:1px solid #d5dfe1;font-weight:650}.stats span:last-child{border-right:0}
+.finding{background:#fff;border:1px solid #d5dfe1;border-radius:6px;padding:18px 20px;margin:10px 0}
+.finding p{margin:10px 0}.meta{display:flex;align-items:center;gap:10px 14px;flex-wrap:wrap;color:#54666d;font-size:.84rem}
+.badge{text-transform:uppercase;border-radius:3px;padding:2px 7px;font-size:.72rem;font-weight:800;color:#172329}
+.critical{background:#f9c8c5}.high{background:#f9d5ae}.medium{background:#f4e7a9}.low{background:#cce9e4}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#26373e;background:#f1f5f5;border:1px solid #e1e9ea;padding:12px;border-radius:4px}
+.action{color:#17635d}footer{border-top:1px solid #d5dfe1;padding-top:18px;margin-top:28px;color:#52636b;font-size:.87rem}
+.review{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-top:1px solid #e0e7e8;padding-top:13px}
+button{font:inherit;border:1px solid #9bb1b4;border-radius:4px;padding:6px 10px;background:#fff;color:#1b3237;cursor:pointer}
+button:hover,button:focus-visible{border-color:#0d706b;background:#eaf4f2}button:focus-visible{outline:2px solid #0d706b;outline-offset:2px}
+button[aria-pressed="true"]{background:#0d706b;color:#fff;border-color:#0d706b}
+.decision-label{margin-left:auto;color:#52636b;font-size:.85rem}.toolbar{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-top:18px}
+.note{color:#52636b;font-size:.83rem;margin:10px 0 24px}
+.impact-section{background:#fff;border:1px solid #d5dfe1;border-radius:6px;padding:20px;margin:20px 0}
+.heuristic-label{display:inline-block;background:#fff3dc;color:#744700;border:1px solid #e8c27a;border-radius:3px;padding:4px 9px;font-size:.82rem;font-weight:700;margin-bottom:12px}
 .impact-list{list-style:none;padding:0;margin:0}
-.impact-row{padding:10px 0;border-bottom:1px solid #1e3248}
+.impact-row{padding:10px 0;border-bottom:1px solid #e5ebec}
 .impact-row:last-child{border-bottom:none}
-.fn-name{font-family:monospace;font-size:.95rem;color:#87d7c6;font-weight:700}
-.fn-loc{font-family:monospace;font-size:.85rem;color:#7a9ab8;margin-left:8px}
+.fn-name{font-family:monospace;font-size:.95rem;color:#17635d;font-weight:700}
+.fn-loc{font-family:monospace;font-size:.85rem;color:#65767b;margin-left:8px}
 .test-list{list-style:none;padding:0 0 0 16px;margin:4px 0 0 0}
-.test-list li{font-family:monospace;font-size:.85rem;color:#9fe3d3}
-.no-match-label{display:block;margin-top:4px;font-size:.85rem;color:#ffbd84;font-style:italic}
-.impact-summary{color:#9eafc2;font-size:.88rem;margin-top:14px;border-top:1px solid #1e3248;padding-top:12px}
+.test-list li{font-family:monospace;font-size:.85rem;color:#17635d}
+.no-match-label{display:block;margin-top:4px;font-size:.85rem;color:#875117;font-style:italic}
+.impact-summary{color:#52636b;font-size:.88rem;margin-top:14px;border-top:1px solid #e5ebec;padding-top:12px}
+@media(max-width:640px){main{padding:24px 16px 48px}h1{font-size:1.9rem}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stats span:nth-child(2){border-right:0}.stats span:nth-child(-n+2){border-bottom:1px solid #d5dfe1}.decision-label{margin-left:0;width:100%}}
 </style><main data-report-id="9dbf4d082f6e7828" data-review-id="9dbf4d082f6e7828"><div class="eyebrow">PatchGate / Change review</div>
 <h1>impact</h1><p class="summary">Evidence-linked review before merge or release.</p>
 <div class="status">READY FOR HUMAN REVIEW</div>

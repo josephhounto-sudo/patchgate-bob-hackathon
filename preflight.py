@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -23,6 +25,35 @@ def is_png(path: Path) -> bool:
         return image.read(8) == PNG_SIGNATURE
 
 
+def impact_fixture_passes() -> bool:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        out = Path(temp_dir) / "impact.html"
+        data = Path(temp_dir) / "impact.json"
+        generated = run([
+            sys.executable, "patchgate.py", "--diff", "fixtures/impact.diff",
+            "--out", str(out), "--json", str(data),
+        ])
+        if generated.returncode != 0 or not out.is_file() or not data.is_file():
+            return False
+        try:
+            report = json.loads(data.read_text(encoding="utf-8"))
+            impact = {item["function"]: item for item in report["impact"]}
+            total = impact["calculate_total"]
+            payment = impact["authorize_payment"]
+            matches = total["test_matches"]
+            return (
+                any(match["test_path"] == "tests/test_checkout_example.py"
+                    and match["test_line"] == 9 for match in matches)
+                and not any(match["test_path"] == "tests/test_checkout_example.py"
+                            and match["test_line"] == 4 for match in matches)
+                and payment["result"] == "no_name_match"
+                and not payment["test_matches"]
+                and "Change Impact Evidence" in out.read_text(encoding="utf-8")
+            )
+        except (KeyError, TypeError, ValueError, OSError):
+            return False
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Check local PatchGate submission blockers")
     parser.add_argument("--video-url", help="Public demo video URL to verify manually")
@@ -31,6 +62,8 @@ def main(argv: list[str] | None = None) -> int:
 
     tests = run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-q"])
     checks.append(("Tests", tests.returncode == 0, "Run python3 -m unittest discover -s tests -v"))
+    checks.append(("Impact example", impact_fixture_passes(),
+                   "Generate fixtures/impact.diff and verify the test call at line 9, the unmatched function, and HTML output"))
 
     state = run(["git", "status", "--porcelain"])
     checks.append(("Clean Git working tree", state.returncode == 0 and not state.stdout.strip(),
@@ -41,9 +74,10 @@ def main(argv: list[str] | None = None) -> int:
                    "Create a dedicated public PatchGate repository and add it as origin"))
 
     screenshots = list((ROOT / "bob_sessions").glob("*.png"))
-    valid = [p for p in screenshots if is_png(p)]
-    checks.append(("Bob task screenshots", bool(valid) and len(valid) == len(screenshots),
-                   "Add genuine PNG summaries for every relevant Bob IDE task and participant"))
+    required = ("task-01-impact.png", "task-02-review.png")
+    valid = all(is_png(ROOT / "bob_sessions" / name) for name in required)
+    checks.append(("Bob task screenshots", valid and all(is_png(p) for p in screenshots),
+                   "Add genuine task-01-impact.png and task-02-review.png summaries in bob_sessions/"))
 
     video = args.video_url or ""
     checks.append(("Video link supplied", video.startswith("https://") and len(video) > 12,

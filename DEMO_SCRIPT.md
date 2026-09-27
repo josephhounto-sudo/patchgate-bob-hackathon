@@ -17,3 +17,17 @@
 - Use legible terminal font and zoom the report enough for paths and lines to be readable.
 - Test the public video link in a private or logged-out window before entering it in lablab.
 - Do not quote a percentage productivity improvement unless it was measured with a described method.
+
+## Prepare the screens after Bob finishes
+
+Run these in the Bob project folder on Windows (use `python` if `py -3` is unavailable):
+
+```powershell
+py -3 patchgate.py --diff fixtures/sample.diff --out demo.html --json demo.json
+py -3 patchgate.py --diff fixtures/impact.diff --out impact.html --json impact.json
+py -3 -m unittest discover -s tests -v
+```
+
+Open `demo.html` and `impact.html` in a browser. At normal zoom, make the report title, file paths and line numbers readable. For the impact shot, show the real call in `tests/test_checkout_example.py:9` and the manual-verification prompt for `authorize_payment` together. Use the actual headings and labels Bob produced; do not narrate an unimplemented control.
+
+Capture the two genuine Bob task summaries together after implementation and review, while both tasks remain accessible in Bob history. Save them as `bob_sessions/task-01-impact.png` and `bob_sessions/task-02-review.png`. These images show Bob participation; the running demo and test output show the product behavior.
