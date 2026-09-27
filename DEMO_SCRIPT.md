@@ -20,12 +20,12 @@
 
 ## Prepare the screens after Bob finishes
 
-Run these in the Bob project folder on Windows (use `python` if `py -3` is unavailable):
+Run these commands in the Bob project folder on Windows. Copy only the command lines, without the `PS ...>` prompt. If PowerShell shows `>>`, press Ctrl+C first. Check that Python is available with `python --version`:
 
 ```powershell
-py -3 patchgate.py --diff fixtures/sample.diff --out demo.html --json demo.json
-py -3 patchgate.py --diff fixtures/impact.diff --out impact.html --json impact.json
-py -3 -m unittest discover -s tests -v
+python patchgate.py --diff fixtures/sample.diff --out demo.html --json demo.json
+python patchgate.py --diff fixtures/impact.diff --out impact.html --json impact.json
+python -m unittest discover -s tests -v
 ```
 
 Open `demo.html` and `impact.html` in a browser. At normal zoom, make the report title, file paths and line numbers readable. For the impact shot, show the real call in `tests/test_checkout_example.py:9` and the manual-verification prompt for `authorize_payment` together. Use the actual headings and labels Bob produced; do not narrate an unimplemented control.
