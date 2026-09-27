@@ -50,3 +50,9 @@ See `PREMORTEM_2026-09-26.md` for the current go/no-go criteria and `DEMO_SCRIPT
 Before submission, run `python3 preflight.py --video-url https://your-public-video-url`. It checks local tests, Git state, a configured remote, the presence and basic PNG validity of Bob summaries, and whether a video URL was supplied. It cannot authenticate the screenshots, confirm a URL is public, or submit the lablab form; verify those manually.
 
 No part of this project uses code, datasets or patient information from Sentinelle or medical records.
+
+## Prior art and distinction
+
+PatchGate was informed at the concept level by [DiffGate](https://github.com/diffgate), [reviewdog](https://github.com/reviewdog/reviewdog), and [diff-cover](https://github.com/Bachmann1234/diff_cover). This implementation was produced independently and does not copy source code from those projects.
+
+PatchGate's distinguishing evidence chain is: changed line → changed function → related test evidence → recorded human decision → portable release review. The goal is a traceable, human-owned audit trail that travels with the diff rather than a CI metric that lives in an external system.

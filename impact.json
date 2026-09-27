@@ -1,0 +1,47 @@
+{
+  "title": "impact",
+  "report_id": "9dbf4d082f6e7828",
+  "review_id": "9dbf4d082f6e7828",
+  "status": "READY FOR HUMAN REVIEW",
+  "stats": {
+    "files": 1,
+    "added": 3,
+    "removed": 2
+  },
+  "findings": [],
+  "review_summary": {
+    "accepted": 0,
+    "fix": 0,
+    "pending": 0
+  },
+  "limitations": [
+    "Pattern matches are review prompts, not proven vulnerabilities.",
+    "Only added lines in tracked changes are scanned; untracked and binary files are outside scope.",
+    "This does not replace tests or security review. Avoid confidential input in shared reports."
+  ],
+  "impact": [
+    {
+      "function": "calculate_total",
+      "source_path": "examples/checkout/app.py",
+      "source_line": 6,
+      "analysis_method": "ast_name_reference",
+      "limitations": "This is a static name-based heuristic. It cannot confirm the test exercises the changed lines, cannot detect indirect calls or dynamic dispatch, and cannot substitute for runtime coverage or manual review.",
+      "test_matches": [
+        {
+          "test_path": "tests/test_checkout_example.py",
+          "test_line": 9
+        }
+      ],
+      "result": "name_match_found"
+    },
+    {
+      "function": "authorize_payment",
+      "source_path": "examples/checkout/app.py",
+      "source_line": 11,
+      "analysis_method": "ast_name_reference",
+      "limitations": "This is a static name-based heuristic. It cannot confirm the test exercises the changed lines, cannot detect indirect calls or dynamic dispatch, and cannot substitute for runtime coverage or manual review.",
+      "test_matches": [],
+      "result": "no_name_match"
+    }
+  ]
+}

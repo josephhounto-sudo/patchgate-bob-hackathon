@@ -59,5 +59,6 @@
     "Pattern matches are review prompts, not proven vulnerabilities.",
     "Only added lines in tracked changes are scanned; untracked and binary files are outside scope.",
     "This does not replace tests or security review. Avoid confidential input in shared reports."
-  ]
+  ],
+  "impact": []
 }
